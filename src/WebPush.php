@@ -70,7 +70,6 @@ class WebPush
     {
         $extensions = [
             'curl' => '[WebPush] curl extension is not loaded but is required. You can fix this in your php.ini.',
-            'gmp' => '[WebPush] gmp extension is not loaded but is required for sending push notifications with payload or for VAPID authentication. You can fix this in your php.ini.',
             'mbstring' => '[WebPush] mbstring extension is not loaded but is required for sending push notifications with payload or for VAPID authentication. You can fix this in your php.ini.',
             'openssl' => '[WebPush] openssl extension is not loaded but is required for sending push notifications with payload or for VAPID authentication. You can fix this in your php.ini.',
         ];
@@ -78,6 +77,10 @@ class WebPush
             if (!extension_loaded($extension)) {
                 trigger_error($message, E_USER_WARNING);
             }
+        }
+        
+        if(!extension_loaded('gmp') && (PHP_MAJOR_VERSION < 7 || (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 3))) {
+            trigger_error('[WebPush] gmp extension is not loaded but is required for sending push notifications with payload or for VAPID authentication. You can fix this in your php.ini.', E_USER_WARNING);
         }
 
         if (ini_get('mbstring.func_overload') >= 2) {
